@@ -499,7 +499,7 @@ do -- We will be able to throw away much of everything in this block
 			unitTypes[unitKey] = unitType
 			unitCommonCounterparts[unitKey] = unitData.commonCounterpart
 
-			print(table.concat(unitData.aliases, ", "))
+			--print(table.concat(unitData.aliases, ", "))
 			for _, alias in ipairs(unitData.aliases) do
 				--alias = stringToTable(alias)
 				
@@ -589,7 +589,7 @@ end
 	@treturn number the result of the conversion
 	@treturn string the unit key of the result
 ]]
-local function convertToCommonCountertype(num, sourceUnits)
+local function convertToCommonCounterpart(num, sourceUnits)
 	return convert(num, sourceUnits, unitCommonCounterparts[sourceUnits])
 end
 
@@ -727,7 +727,17 @@ local function findNumUnitPairsInString(str)
 end
 
 
+return {
+	convert = convert,
+	convertToCommonCounterpart = convertToCommonCounterpart,
 
+	findNumUnitPairsInString = findNumUnitPairsInString,
+}
+
+
+
+--[[
+-- Some tests idk how to do unit tests ;-;
 
 for _, pair in ipairs(findNumUnitPairsInString("Hello, this road is 3781 meters long!")) do
 	print(pair.num, pair.unit)
@@ -743,3 +753,4 @@ for _, pair in ipairs(findNumUnitPairsInString("Hello, this road is -3781.12 us 
 end
 
 print(convert(1, "mi", "ft"))
+]]
