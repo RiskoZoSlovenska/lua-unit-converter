@@ -24,7 +24,7 @@
 ]]
 --[[local function stringToTable(str)
 	local words = {}
-	string.gsub(str, "[%w]+", function(word) table.insert(words, word) end)
+	string.gsub(str, "[%-%w%.]+", function(word) table.insert(words, word) end)
 
 	return words
 end]]
