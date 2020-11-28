@@ -155,23 +155,61 @@ end]]
 
 --- A table of basic character replacements to be performed on messages at first
 local PRE_REPLACEMENTS = {
-	["km"] = {"㎞"},
-	["cm"] = {"㎝"},
-	["mm"] = {"㎜"},
-	["um"] = {"㎛", "μm"},
+	-- Metres
 	["nm"] = {"㎚"},
-	["us"] = {"μs"},
+	["um"] = {"㎛", "μm"},
+	["mm"] = {"㎜"},
+	["cm"] = {"㎝"},
+	["km"] = {"㎞"},
 
-	["km2"] = {"㎢"},
-	["cm2"] = {"㎠"},
+	-- Metres squared
 	["mm2"] = {"㎣"},
+	["cm2"] = {"㎠"},
+	["m2"] = {"㎡"},
+	["km2"] = {"㎢"},
 
+	-- Metres cubed
+	["mm3"] = {"㎣"},
+	["cm3"] = {"㎤"},
+	["m3"] = {"㎥"},
+	["km3"] = {"㎦"},
+	
+	-- Squared/cubed suffixes
 	["2"] = {"²", "%^2"},
 	["3"] = {"³", "%^3"},
 
+	--[[ Metres / second (currently not supported)
+	["mps"] = {"㎧"},
+	["mps2"] = {"㎨"},
+	]]
+
+	-- Seconds
+	["ps"] = {"㎰"},
+	["ns"] = {"㎱"},
+	["us"] = {"㎲", "μs"},
+	["ms"] = {"㎳"},
+
+	--[[ -- Pascals (currently not supported)
+	["pa"] = {"㎩"},
+	["kpa"] = {"㎪"},
+	["mpa"] = {"㎫"},
+	["gpa"] = {"㎬"},
+	]]
+	
+	--[[ -- Volts (currently not supported)
+	["pv"] = {"㎴"},
+	["nv"] = {"㎵"},
+	["uv"] = {"㎶", "μv"},
+	["mv"] = {"㎷"},
+	["kv"] = {"㎸"},
+	["mv"] = {"㎹"}, -- Duplicate index (case-sensitivity required?)
+	]]
+
+	-- Different spellings
 	["metre"] = {"meter"},
 	["litre"] = {"liter"},
 
+	-- Other
 	[""] = {"[^%P%^%.]"}, -- All punctuation except ^ and .
 }
 
