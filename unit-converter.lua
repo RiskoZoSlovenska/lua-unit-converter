@@ -1,11 +1,135 @@
 --[[--
-	@module lua-unit-converter
+	@module unit-converter
 	@author RiskoZoSlovenska
 
 	A Lua unit conversion library.
 
-	TODO: This
+	So, welcome to this mess I call a unit converter! :D
+
+	Mind that, well, I'm not the best at this, so just bear with me. Or make your own, I don't care.
+	Also note that I originally made this for a (private) Discord bot, and that's why I went through the pain of
+	unit aliases and stuff.
+
+	I've tried my best to document the library's functions in LDoc (not sure if it's even valid tbh). I'll try to give
+	a quick explanation of how this thing works (mostly because I like explaining stuff).
+
+	When it comes to converting, storing a number for each possible conversion (metres -> inches, inches -> metres,
+	metres -> kilometres, kilometres -> metres and so on.) is brutally inefficient. Instead, for each unit type I've defined
+	one unit to act as a "base" - metres for distance, for example. Then, for each other unit I only need to remember one number,
+	which can be used to convert from that unit to the base by multiplying (and from the base to that unit by dividing). So, if
+	for example I want to convert from inches to kilometres, I first convert inches to metres and then metres to kilometres.
+
+	Not all units work like this (a good example is converting from Celsius to Fahrenheit or Kelvin, as 0 Celsius ~= 0 Fahrenheit ~= 0 Kelvin),
+	and so a function can be used instead of a number.
+
+	
+	In terms of string matching and unit aliases, each unit has a list of possible aliases and when a string is to be searched for num-unit
+	pairs, I perform a string.gsub call on each possible alias. Yes, I know this is ugly and potentially slow. I did have an alternate,
+	hopefully faster albeit much more complex system which makes up the vast majority of commented-out code in this library (yes, I
+	know too many comments are unhealthy. welp.) I decided to go with the mass gsub-ing for the sake of simplicity and because
+	performance wasn't my priority (note that unit-to-unit conversions are still kinda fast (I think)).
+
+	If performance is an issue for you... (eek, does this mean you're actually using this in a high-stress, possibly professional
+	environment? .-.) The old system worked by splitting up strings into arrays of words, holding these arrays in more arrays which were
+	in one big dictionary, indexed by their first word, so something like:
+
+	local aliases = {
+		["metre"] = {
+			{{"metre squared"}, "m2"},
+			{{"metre cubed"}, "m3"},
+			{{"metre"}, "m"},
+		},
+		["us"] = {
+			-- Sorted by word list length
+			{{"us", "liquid", "ounce"}, "uslqoz"},
+			{{"us", "gallon"}, "usgal"},
+			{{"us"}, "us"}, -- (Micrometres)
+		},
+		-- etc.
+	}
+
+	Then, when you have your string split up into an array of words, you simply look for a number "word" and check if the next few words
+	correspond to any alias. (Sorry, that wasn't explained well, I know.)
+
+
+
+	Oh right! I almost forgot, unit key documentation: Each unit has a unit key, which is a short string. This string is to be passed
+	to the convert function.
+
+	The currently supported unit (keys) are:
+
+		Time
+			us
+			w
+			d
+			s
+			ps
+			ms
+			ns
+			min
+			h
+			y
+		Length
+			ft
+			in
+			km
+			mm
+			nm
+			yd
+			m
+			mi
+			cm
+			ly
+			um
+		Weight
+			g
+			ct
+			mg
+			t
+			kg
+			oz
+			lb
+		Temperature
+			c
+			f
+			k
+		Area
+			mi2
+			km2
+			in2
+			yd2
+			mm2
+			cm2
+			m2
+			ac
+			ft2
+			ha
+			um2
+		Volume
+			cm3
+			um3
+			ft3
+			dl
+			m3
+			in3
+			km3
+			mi3
+			mm3
+			yd3
+			l
+			ml
+
+	Sorry for the horrible formatting and everything. When in doubt, just Ctrl + F (or take a look at the UNIT_DATA table).
+
+	Lastly, because this library was meant to be used by a Discord bot, for utility it also support "common unit counterparts" - 
+	each unit has a designated other unit to which a number can be converted by suppling only the target unit.
+
+
+	aaaaaaand I think that's everything I have to tell you! Once again, I apoligize for my incompetence, and if for some reason
+	you actually *do* decide to use this library, pls give me credit. Thanks!
 ]]
+
+
 
 --- Metatable for an auto-constructing 2D-array
 --[[local TWO_D_META = {
@@ -51,7 +175,7 @@ local PRE_REPLACEMENTS = {
 	[""] = {"[^%P%^%.]"}, -- All punctuation except ^ and .
 }
 
-local unitAliases = {}
+local unitAliases = {} -- These will be initialized right below
 local unitConverters = {}
 local unitTypes = {}
 local unitCommonCounterparts = {}
@@ -167,7 +291,7 @@ do -- We will be able to throw away much of everything in this block
 		)
 	end
 
-	local UNIT_DATA = {
+	local UNIT_DATA = { -- This table will be thrown away
 		length = { -- Length
 			["m"] = { -- Metres
 				aliases = buildAliasesNormal({"metre"}, {"m"}),
@@ -535,6 +659,19 @@ do -- We will be able to throw away much of everything in this block
 	-- end
 
 	--setmetatable(unitAliases, nil)
+
+	-- Print all the units. Feel free to delete.
+	--[[do
+		local units = ""
+		for unitType, unitDatas in pairs(UNIT_DATA) do
+			units = units .. string.gsub(unitType, "^%l", string.upper) .. "\n"
+
+			for unitKey, _ in pairs(unitDatas) do
+				units = units .. "\t" .. unitKey .. "\n"
+			end
+		end
+		print(units)
+	end]]
 end
 
 --[[--
