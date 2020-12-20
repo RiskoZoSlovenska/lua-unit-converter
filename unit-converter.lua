@@ -749,7 +749,6 @@ local function convert(num, sourceUnits, targetUnits)
 	assert(sourceType == targetType, "Incompatible unit types!")
 
 	local numInBase = convertRaw(num, unitConverters[sourceType][sourceUnits], true)
-	print(numInBase)
 	local numInTarget = convertRaw(numInBase, unitConverters[targetType][targetUnits], false)
 
 	return numInTarget, targetUnits
@@ -787,7 +786,6 @@ local function cleanString(str)
 
 	str = ' ' .. str .. ' ' -- Padding to make sure edge cases also match
 	for _, aliasData in ipairs(unitAliases) do
-		--print(str, aliasData.alias)
 		str = str:gsub(aliasData.alias, ' ' .. aliasData.key .. ' ')
 	end
 
