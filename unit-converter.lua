@@ -210,7 +210,7 @@ local PRE_REPLACEMENTS = {
 	["litre"] = {"liter"},
 
 	-- Other
-	[""] = {"[^%P%^%.]"}, -- All punctuation except ^ and .
+	[""] = {"[^%P%^%.%+%-%/]"}, -- All punctuation except ^.-+/ -- Possibly also include $?
 }
 
 local unitAliases = {} -- These will be initialized right below
@@ -644,7 +644,7 @@ do -- We will be able to throw away much of everything in this block
 				commonCounterpart = "s",
 			},
 			["y"] = { -- Julian Years (365.25 days)
-				aliases = buildAliasesNormal({"y", "a", "year", "julian year"}),
+				aliases = buildAliasesNormal({"y", "year", "julian year"}),
 				convert = 31557600,
 				commonCounterpart = "lb",
 			},
