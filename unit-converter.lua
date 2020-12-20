@@ -121,12 +121,12 @@
 
 	Sorry for the horrible formatting and everything. When in doubt, just Ctrl + F (or take a look at the UNIT_DATA table).
 
-	Lastly, because this library was meant to be used by a Discord bot, for utility it also support "common unit counterparts" - 
-	each unit has a designated other unit to which a number can be converted by suppling only the target unit.
+	Lastly, because this library was meant to be used by a Discord bot, for utility it also supports "common unit counterparts" - 
+	each unit has a designated other unit to which a number can be converted by suppling only the source unit.
 
 
 	aaaaaaand I think that's everything I have to tell you! Once again, I apoligize for my incompetence, and if for some reason
-	you actually *do* decide to use this library, pls give me credit. Thanks!
+	you actually *do* decide to use this library, pls give me at least some credit. Thanks!
 ]]
 
 
@@ -770,8 +770,8 @@ end
 
 
 --[[--
-	Takes a string and performs several @{string.gsub} operations upon it to replace unit aliases with unit keys,
-	to get rid of unicode characters and so on. Also lowers the string.
+	Takes a string and performs several @{string.gsub} operations on it to replace unit aliases with unit keys,
+	to get rid of unicode characters and so on. Also @[string.lower}s the string.
 
 	@tparam string str the string to clean
 	@treturn string the cleaned string
@@ -785,7 +785,7 @@ local function cleanString(str)
 		end
 	end
 
-	str = ' ' .. str .. ' '
+	str = ' ' .. str .. ' ' -- Padding to make sure edge cases also match
 	for _, aliasData in ipairs(unitAliases) do
 		--print(str, aliasData.alias)
 		str = str:gsub(aliasData.alias, ' ' .. aliasData.key .. ' ')
