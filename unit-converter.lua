@@ -896,30 +896,52 @@ local function findElementsInString(str)
 end
 
 
+--[[
+do -- Some tests idk how to do unit tests ;-;
+	local tests = {
+		["Hello, this road is a road"] = {},
+		["Hello, this road is 10 roads"] = {10},
+		["Hello, this road is 23 kilometres roads"] = {23, "km"},
+		["Hello, this road is a mile"] = {"mi"},
+		["Hello, this road is +32765012 us long"] = {32765012, "us"},
+		["Hello, this road is 23.3241 metres roads"] = {23.3241, "m"},
+		["Hello, this road is -23.3241 metres roads"] = {-23.3241, "m"},
+	}
+
+	for test, correctAnswer in pairs(tests) do
+		local answer = findElementsInString(test)
+
+		local correct = true
+		for key, value in pairs(answer) do
+			if correctAnswer[key] ~= value then
+				correct = false
+				break
+			end
+		end
+		for key, value in pairs(correctAnswer) do
+			if answer[key] ~= value then
+				correct = false
+				break
+			end
+		end
+
+		if not correct then
+			print(string.format(
+				"Incorrect test \"%s\".\nExpected: \"%s\"\nGot:      \"%s\"\n",
+				test,
+				table.concat(correctAnswer, "\", \""),
+				table.concat(answer, "\", \"")
+			))
+		else
+			print("Test passed")
+		end
+	end
+end
+--]]
+
 return {
 	convert = convert,
 	convertToCommonCounterpart = convertToCommonCounterpart,
 
 	findElementsInString = findElementsInString,
 }
-
-
-
---[[
--- Some tests idk how to do unit tests ;-;
-
-for _, pair in ipairs(findNumUnitPairsInString("Hello, this road is 3781 meters long!")) do
-	print(pair.num, pair.unit)
-end
-for _, pair in ipairs(findNumUnitPairsInString("Hello, this road is -3781 meters cubed long!")) do
-	print(pair.num, pair.unit)
-end
-for _, pair in ipairs(findNumUnitPairsInString("Hello, this road is 3781.234 light years long!")) do
-	print(pair.num, pair.unit)
-end
-for _, pair in ipairs(findNumUnitPairsInString("Hello, this road is -3781.12 us long!")) do
-	print(pair.num, pair.unit)
-end
-
-print(convert(1, "mi", "ft"))
-]]
