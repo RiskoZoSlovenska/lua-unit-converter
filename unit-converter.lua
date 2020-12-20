@@ -882,23 +882,17 @@ end]]
 	@treturn table[] an array of found pairs. Each pair is a table in the form {num = foundNumber, unit = foundString},
 		where foundNumber and foundString are the found number and unit key of the pair respectively
 ]]
-local function findNumUnitPairsInString(str)
+local function findElementsInString(str)
 	local cleaned = cleanString(str)
-	local foundPairs = {}
+	local foundElements = {}
 
-	for num, unit in string.gmatch(cleaned ,"%W(%-?[%d%.]+)%W+(%w+)") do -- Match a number (minus sign and decimals included) plus string
-		if unitTypes[unit] then -- This is a valid unit.
-			table.insert(
-				foundPairs,
-				{
-					num = tonumber(num),
-					unit = unit,
-				}
-			)
-		end
+	for element in string.gmatch(cleaned, "%S+") do
+		table.insert(foundElements,
+			tonumber(element) or (unitTypes[element] and element) -- If is not number or valid unit, will insert nil which has no effect
+		)
 	end
 
-	return foundPairs
+	return foundElements
 end
 
 
@@ -906,7 +900,7 @@ return {
 	convert = convert,
 	convertToCommonCounterpart = convertToCommonCounterpart,
 
-	findNumUnitPairsInString = findNumUnitPairsInString,
+	findElementsInString = findElementsInString,
 }
 
 
