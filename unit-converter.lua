@@ -132,29 +132,6 @@
 ]]
 
 
-
---- Metatable for an auto-constructing 2D-array
---[[local TWO_D_META = {
-	__index = function(tbl, key)
-		local new = {}
-		tbl[key] = new
-		return new
-	end
-}]]
-
---[[--
-	Converts a string to an array of words.
-
-	@tparam string str the string to split
-	@treturn string[] an array of all %w+ pattersn in the string
-]]
---[[local function stringToTable(str)
-	local words = {}
-	string.gsub(str, "[%-%w%.]+", function(word) table.insert(words, word) end)
-
-	return words
-end]]
-
 --- A table of basic character replacements to be performed on messages at first
 local PRE_REPLACEMENTS = {
 	-- Metres
@@ -371,33 +348,33 @@ do -- We will be able to throw away much of everything in this block
 
 			["mi"] = { -- Miles
 				aliases = buildAliasesNormal({"mi", "mile"}),
-				convert = 1609.344,
+				convert = 1609.344, -- https://en.wikipedia.org/wiki/Mile
 				commonCounterpart = "km",
 			},
 			["yd"] = { -- Yards
 				aliases = buildAliasesNormal({"yd", "yard"}),
-				convert = 0.9144,
+				convert = 0.9144, -- https://en.wikipedia.org/wiki/Yard
 				commonCounterpart = "m",
 			},
 			["ft"] = { -- Feet
 				aliases = buildAliasesNormal({"ft"}, {"foot", "feet"}),
-				convert = 0.3048,
+				convert = 0.3048, -- https://en.wikipedia.org/wiki/Foot_(unit)
 				commonCounterpart = "m",
 			},
-			["in"] = { -- Inches -- ('in' is a keyword)
+			["in"] = { -- Inches
 				aliases = buildAliasesNormal({"in"}, {"inch", "inches"}),
-				convert = 0.0254,
+				convert = 0.0254, -- https://en.wikipedia.org/wiki/Inch
 				commonCounterpart = "cm",
 			},
 
 			["au"] = { -- Astronomical units
 				aliases = buildAliasesNormal({"au", "astronomicalunit", "astronomical unit", "astronomical"}),
-				convert = 149597870700,
+				convert = 149597870700, -- https://en.wikipedia.org/wiki/Astronomical_unit
 				commonCounterpart = "km",
 			},
 			["ly"] = { -- Light years
 				aliases = buildAliasesNormal({"ly", "lightyear", "light year"}),
-				convert = 9460730472580800,
+				convert = 9460730472580800, -- https://en.wikipedia.org/wiki/Light-year#Definitions
 				commonCounterpart = "km",
 			},
 		},
@@ -409,7 +386,7 @@ do -- We will be able to throw away much of everything in this block
 			},
 			["f"] = { -- Fahrenheit
 				aliases = {"f", "fahrenheit"},
-				convert = function(num, toBase)
+				convert = function(num, toBase) -- https://en.wikipedia.org/wiki/Fahrenheit#Definition_and_conversion
 					if toBase then
 						return (num - 32) * 5/9
 					else
@@ -420,7 +397,7 @@ do -- We will be able to throw away much of everything in this block
 			},
 			["k"] = { -- Kelvin
 				aliases = {"k", "kelvin"},
-				convert = function(num, toBase)
+				convert = function(num, toBase) -- https://en.wikipedia.org/wiki/Kelvin#Practical_uses
 					if toBase then
 						return num - 273.15
 					else
@@ -458,7 +435,7 @@ do -- We will be able to throw away much of everything in this block
 			},
 			["ha"] = { -- Hectares
 				aliases = buildAliasesNormal({"hectare"}, {"ha", "hec"}),
-				convert = 1e4, -- (10000)
+				convert = 1e4, -- (10000) -- https://en.wikipedia.org/wiki/Hectare#Conversions
 				commonCounterpart = "ac",
 			},
 
@@ -484,7 +461,7 @@ do -- We will be able to throw away much of everything in this block
 			},
 			["ac"] = { -- Acres
 				aliases = buildAliasesNormal({"ac", "acre"}),
-				convert = 4046.8564224,
+				convert = 4046.8564224, -- https://en.wikipedia.org/wiki/Acre#Equivalence_to_other_units_of_area
 				commonCounterpart = "ha",
 			},
 		},
@@ -538,7 +515,7 @@ do -- We will be able to throw away much of everything in this block
 
 			["l"] = { -- Litres
 				aliases = buildAliasesNormal({"l", "litre"}),
-				convert = 1e-3,
+				convert = 1e-3, -- https://en.wikipedia.org/wiki/Litre#Definition
 				commonCounterpart = "cm3",
 			},
 			["dl"] = { -- Decilitres
@@ -552,7 +529,10 @@ do -- We will be able to throw away much of everything in this block
 				commonCounterpart = "cm3",
 			},
 
-			--[[["usgal"] = {}, -- US Gallon
+			--[[
+			TODO: Add these
+
+			["usgal"] = {}, -- US Gallon
 			["usquart"] = {}, -- US Quart
 			["uspint"] = {}, -- US Pint
 			["uscup"] = {}, -- US Cup
@@ -560,9 +540,10 @@ do -- We will be able to throw away much of everything in this block
 			["ustbsp"] = {}, -- US Tablespoon
 			["sutsp"] = {}, -- US Teaspoon
 
-			impgal = {}, -- Imperial Gallon
-			imptbsp = {}, -- Imperial Tablespoon
-			imptsp = {}, -- Imperial Teaspoon]]
+			["impgal"] = {}, -- Imperial Gallon
+			["imptbsp"] = {}, -- Imperial Tablespoon
+			["imptsp"] = {}, -- Imperial Teaspoon
+			]]
 		},
 		weight = { -- Weight
 			["g"] = { -- Grams
@@ -588,25 +569,21 @@ do -- We will be able to throw away much of everything in this block
 
 			["lb"] = { -- Pounds
 				aliases = buildAliasesNormal({"lb", "pound"}),
-				convert = 453.59237,
+				convert = 453.59237, -- https://en.wikipedia.org/wiki/Pound_(mass)#Current_use
 				commonCounterpart = "kg",
 			},
-			["oz"] = { -- Ounces
+			["oz"] = { -- International avoirdupois ounces
 				aliases = buildAliasesNormal({"oz", "pound"}),
-				convert = 28.349523125,
+				convert = 28.349523125, -- https://en.wikipedia.org/wiki/Ounce#International_avoirdupois_ounce
 				commonCounterpart = "g",
 			},
 
 			["ct"] = { -- Carats
 				aliases = buildAliasesNormal({"ct", "carat", "karat"}),
-				convert = 0.2,
+				convert = 0.2, -- https://en.wikipedia.org/wiki/Carat_(mass)
 				commonCounterpart = "kg",
 			},
-
-			--[[longton = {}, -- Long Ton
-			shortton = {}, -- Short Ton
-
-			atomicmass = {}, -- Atomic Mass Unit]]
+			-- TODO: Add long ton, short ton, atomicmass
 		},
 		time = { -- Time
 			["s"] = { -- Seconds
@@ -662,13 +639,11 @@ do -- We will be able to throw away much of everything in this block
 			},
 			["y"] = { -- Gregorian Years (365.2425 days)
 				aliases = buildAliasesNormal({"y", "year"}),
-				convert = 31556952,
+				convert = 31556952, -- https://en.wikipedia.org/wiki/Gregorian_calendar
 				commonCounterpart = "d",
 			},
 		},
 	}
-
-	--setmetatable(unitAliases, TWO_D_META) -- This and other comments in this block were from previous unit matching method
 
 	for unitType, unitDatas in pairs(UNIT_DATA) do
 		local convertertsOfType = {}
@@ -678,16 +653,11 @@ do -- We will be able to throw away much of everything in this block
 			unitTypes[unitKey] = unitType
 			unitCommonCounterparts[unitKey] = unitData.commonCounterpart
 
-			--print(table.concat(unitData.aliases, ", "))
 			for _, alias in ipairs(unitData.aliases) do
-				--alias = stringToTable(alias)
-				
 				table.insert(
 					unitAliases,
-					--unitAliases[alias[1]],
 					{
 						alias = "%W" .. alias:gsub("%s", "%%W") .. "%W",
-						-- alias = alias,
 						key = unitKey
 					}
 				)
@@ -704,19 +674,9 @@ do -- We will be able to throw away much of everything in this block
 		end
 	)
 
-	-- for _, aliasDatas in pairs(unitAliases) do
-	-- 	table.sort(
-	-- 		aliasDatas,
-	-- 		function(aliasData1, aliasData2)
-	-- 			return #aliasData1.alias > #aliasData2.alias -- Sort by ascending
-	-- 		end
-	-- 	)
-	-- end
-
-	--setmetatable(unitAliases, nil)
-
 	-- Print all the units. Feel free to delete.
-	--[[do
+	--[[
+	do
 		local units = ""
 		for unitType, unitDatas in pairs(UNIT_DATA) do
 			units = units .. string.gsub(unitType, "^%l", string.upper) .. "\n"
@@ -726,7 +686,8 @@ do -- We will be able to throw away much of everything in this block
 			end
 		end
 		print(units)
-	end]]
+	end
+	--]]
 end
 
 --[[--
@@ -803,92 +764,11 @@ local function cleanString(str)
 
 	str = ' ' .. str .. ' ' -- Padding to make sure edge cases also match
 	for _, aliasData in ipairs(unitAliases) do
-		str = str:gsub(aliasData.alias, ' ' .. aliasData.key .. ' ')
+		str = str:gsub(aliasData.alias, ' ' .. aliasData.key .. ' ') -- Padding to compensate for the extra %W taken from sides
 	end
 
 	return str
 end
-
---[[--
-	Takes two lists and checks if one is contained within the other, starting from a certain position.
-
-	Used for an alternate alias matching method.
-
-	Read the implementation.
-
-	@tparam table words an array of values
-	@tparam number startNum the index from which to start the comparisonc checking
-	@tparam table unitWords the table to check if is contained within the words table
-
-	@treturn boolean whether unitWords is contained within words, starting at the startNum index
-]]
---[[local function isUnitInWordList(words, startNum, unitWords)
-	for wordIndex, unitWord in ipairs(unitWords) do
-		if words[wordIndex + startNum - 1] ~= unitWord then
-			return false
-		end
-	end
-
-	return true
-end]]
-
---[[--
-	Calls a @{isUnitInWordList}  on all the possible alias word tables.
-
-	Used for an alternate alias matching method.
-
-	@tparam table words an array of values
-	@tparam number startNum the index from which tp start the search
-
-	@treturn string the key of the unit which was matched, or nil if none was matched
-]]
---[[local function findUnitInWordList(words, startNum)
-	local possibleAliases = unitAliases[(words[startNum])] -- Double ending brackets conflicted with comments
-	if possibleAliases then
-		for aliasWords, unitKey in pairs(possibleAliases) do
-			if isUnitInWordList(words, startNum, aliasWords) then
-				return unitKey
-			end
-		end
-	end
-
-	return nil
-end]]
-
---[[--
-	Scans a string for number-unit pairs.
-
-	Implementation is for an alternate alias matching method.
-
-	@tparam string str the string to search
-	@treturn table[] an array of found pairs. Each pair is a table in the form {num = foundNumber, unit = foundString},
-		where foundNumber and foundString are the found number and unit key of the pair respectively
-]]
---[[local function findNumUnitPairsInString(str)
-	str = cleanString(str)
-	
-	local words = stringToTable(str)
-	local foundPairs = {}
-
-	for wordNum, word in ipairs(words) do
-		local num = tonumber(word)
-		if num then
-			-- Check if prev words are units
-			local unitKey = findUnitInWordList(words, wordNum + 1)
-			if unitKey then
-				table.insert( -- Insert num-unit pair
-					foundPairs,
-					{
-						num = num,
-						unit = unitKey,
-					}
-				)
-			end
-		end
-	end
-
-	return foundPairs
-end]]
 
 --[[--
 	Scans a string for number-unit pairs.
@@ -942,7 +822,7 @@ do -- Some tests idk how to do unit tests ;-;
 
 		if not correct then
 			print(string.format(
-				"Incorrect test \"%s\".\nExpected: \"%s\"\nGot:      \"%s\"\n",
+				"Incorrect test %q.\nExpected: %q\nGot:      %q\n",
 				test,
 				table.concat(correctAnswer, "\", \""),
 				table.concat(answer, "\", \"")
