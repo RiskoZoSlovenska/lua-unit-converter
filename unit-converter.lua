@@ -207,6 +207,11 @@ local PRE_REPLACEMENTS = {
 	["mv"] = {"㎹"}, -- Duplicate index (case-sensitivity required?)
 	]]
 
+	-- Temperature
+	["c"] = {"℃"},
+	["f"] = {"℉"},
+	["k"] = {"K"},
+
 	-- Different spellings
 	["metre"] = {"meter"},
 	["litre"] = {"liter"},
