@@ -349,44 +349,44 @@ do -- We will be able to throw away much of everything in this block
 			["mm"] = { -- Millimetres
 				aliases = buildAliasesNormal({"mm", "millimetre"}),
 				convert = 1e-3,
-				commonCounterpart = "in",
+				commonCounterpart = "cm",
 			},
 			["um"] = { -- Micrometres
 				aliases = buildAliasesNormal({"um", "micrometre"}),
 				convert = 1e-6,
-				commonCounterpart = "in",
+				commonCounterpart = "cm",
 			},
 			["nm"] = { -- Nanometres
 				aliases = buildAliasesNormal({"nm", "nanometre"}),
 				convert = 1e-9,
-				commonCounterpart = "in",
+				commonCounterpart = "cm",
 			},
 
 			["mi"] = { -- Miles
 				aliases = buildAliasesNormal({"mi", "mile"}),
 				convert = 1609.344,
-				commonCounterpart = "in",
+				commonCounterpart = "km",
 			},
 			["yd"] = { -- Yards
 				aliases = buildAliasesNormal({"yd", "yard"}),
 				convert = 0.9144,
-				commonCounterpart = "in",
+				commonCounterpart = "m",
 			},
 			["ft"] = { -- Feet
 				aliases = buildAliasesNormal({"ft"}, {"foot", "feet"}),
 				convert = 0.3048,
-				commonCounterpart = "in",
+				commonCounterpart = "m",
 			},
 			["in"] = { -- Inches -- ('in' is a keyword)
 				aliases = buildAliasesNormal({"in"}, {"inch", "inches"}),
 				convert = 0.0254,
-				commonCounterpart = "in",
+				commonCounterpart = "cm",
 			},
 
 			["ly"] = { -- Light years
 				aliases = buildAliasesNormal({"ly", "lightyear", "light year"}),
 				convert = 9460730472580800,
-				commonCounterpart = "in",
+				commonCounterpart = "km",
 			},
 		},
 		temperature = { -- Temperature
@@ -605,22 +605,22 @@ do -- We will be able to throw away much of everything in this block
 			["ms"] = { -- Milliseconds
 				aliases = buildAliasesNormal({"ms", "millisecond", "milli"}),
 				convert = 1e-3,
-				commonCounterpart = "lb",
+				commonCounterpart = "s",
 			},
 			["us"] = { -- Microseconds
 				aliases = buildAliasesNormal({"us", "microsecond", "micro"}),
-				convert = 1e-3,
-				commonCounterpart = "oz",
+				convert = 1e-6,
+				commonCounterpart = "s",
 			},
 			["ns"] = { -- Nanoseconds
 				aliases = buildAliasesNormal({"ns", "nanosecond"}),
-				convert = 1e6,
-				commonCounterpart = "lb",
+				convert = 1e-9,
+				commonCounterpart = "s",
 			},
 			["ps"] = { -- Picoseconds
 				aliases = buildAliasesNormal({"ps", "picosecond"}),
-				convert = 1,
-				commonCounterpart = "oz",
+				convert = 1e-12,
+				commonCounterpart = "s",
 			},
 
 			["min"] = { -- Minutes
@@ -646,7 +646,7 @@ do -- We will be able to throw away much of everything in this block
 			["y"] = { -- Julian Years (365.25 days)
 				aliases = buildAliasesNormal({"y", "year", "julian year"}),
 				convert = 31557600,
-				commonCounterpart = "lb",
+				commonCounterpart = "d",
 			},
 		},
 	}
