@@ -69,6 +69,7 @@
 			min
 			h
 			y
+			fs
 		Length
 			ft
 			in
@@ -81,6 +82,7 @@
 			cm
 			ly
 			um
+			au
 		Weight
 			g
 			ct
@@ -383,6 +385,11 @@ do -- We will be able to throw away much of everything in this block
 				commonCounterpart = "cm",
 			},
 
+			["au"] = { -- Astronomical units
+				aliases = buildAliasesNormal({"au", "astronomicalunit", "astronomical unit", "astronomical"}),
+				convert = 149597870700,
+				commonCounterpart = "km",
+			},
 			["ly"] = { -- Light years
 				aliases = buildAliasesNormal({"ly", "lightyear", "light year"}),
 				convert = 9460730472580800,
@@ -620,6 +627,11 @@ do -- We will be able to throw away much of everything in this block
 			["ps"] = { -- Picoseconds
 				aliases = buildAliasesNormal({"ps", "picosecond"}),
 				convert = 1e-12,
+				commonCounterpart = "s",
+			},
+			["fs"] = { -- Femtoseconds
+				aliases = buildAliasesNormal({"fs", "femtosecond"}),
+				convert = 1e-15,
 				commonCounterpart = "s",
 			},
 
