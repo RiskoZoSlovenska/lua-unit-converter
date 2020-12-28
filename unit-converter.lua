@@ -655,9 +655,9 @@ do -- We will be able to throw away much of everything in this block
 				convert = 604800,
 				commonCounterpart = "s",
 			},
-			["y"] = { -- Julian Years (365.25 days)
-				aliases = buildAliasesNormal({"y", "year", "julian year"}),
-				convert = 31557600,
+			["y"] = { -- Gregorian Years (365.2425 days)
+				aliases = buildAliasesNormal({"y", "year"}),
+				convert = 31556952,
 				commonCounterpart = "d",
 			},
 		},
