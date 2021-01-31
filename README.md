@@ -9,8 +9,6 @@ Should support conversion between several types of units, including types of len
 
 No docs because I don't know how to do those (or at least, I don't know how to build docs out of code comments). There are some "docs" in the source.
 
-No license as of now because I also don't know how to do that.
-
 <br>
 
 Fun fact: I have absolutely no idea what I'm doing and this may not even work.
