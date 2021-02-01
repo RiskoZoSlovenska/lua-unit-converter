@@ -1,6 +1,9 @@
 --[[--
 	@module unit-converter
 	@author RiskoZoSlovenska
+	@version 1.0.1
+	@date Feb 2021
+	@license MIT
 
 	A Lua unit conversion library.
 
@@ -22,35 +25,11 @@
 	Not all units work like this (a good example is converting from Celsius to Fahrenheit or Kelvin, as 0 Celsius ~= 0 Fahrenheit ~= 0 Kelvin),
 	and so a function can be used instead of a number.
 
-	
+
 	In terms of string matching and unit aliases, each unit has a list of possible aliases and when a string is to be searched for num-unit
 	pairs, I perform a string.gsub call on each possible alias. Yes, I know this is ugly and potentially slow. I did have an alternate,
-	hopefully faster albeit much more complex system which makes up the vast majority of commented-out code in this library (yes, I
-	know too many comments are unhealthy. welp.) I decided to go with the mass gsub-ing for the sake of simplicity and because
-	performance wasn't my priority (note that unit-to-unit conversions are still kinda fast (I think)).
-
-	If performance is an issue for you... (eek, does this mean you're actually using this in a high-stress, possibly professional
-	environment? .-.) The old system worked by splitting up strings into arrays of words, holding these arrays in more arrays which were
-	in one big dictionary, indexed by their first word, so something like:
-
-	local aliases = {
-		["metre"] = {
-			{{"metre squared"}, "m2"},
-			{{"metre cubed"}, "m3"},
-			{{"metre"}, "m"},
-		},
-		["us"] = {
-			-- Sorted by word list length
-			{{"us", "liquid", "ounce"}, "uslqoz"},
-			{{"us", "gallon"}, "usgal"},
-			{{"us"}, "us"}, -- (Micrometres)
-		},
-		-- etc.
-	}
-
-	Then, when you have your string split up into an array of words, you simply look for a number "word" and check if the next few words
-	correspond to any alias. (Sorry, that wasn't explained well, I know.)
-
+	hopefully faster albeit much more complex system, but I decided to go with the mass gsub-ing for the sake of simplicity and because
+	performance wasn't my priority (note that unit-to-unit conversions should still be kinda fast (I think)).
 
 
 	Oh right! I almost forgot, unit key documentation: Each unit has a unit key, which is a short string. This string is to be passed
@@ -123,12 +102,8 @@
 
 	Sorry for the horrible formatting and everything. When in doubt, just Ctrl + F (or take a look at the UNIT_DATA table).
 
-	Lastly, because this library was meant to be used by a Discord bot, for utility it also supports "common unit counterparts" - 
+	Lastly, because this library was meant to be used by a Discord bot, for utility it also supports "common unit counterparts" -
 	each unit has a designated other unit to which a number can be converted by suppling only the source unit.
-
-
-	aaaaaaand I think that's everything I have to tell you! Once again, I apoligize for my incompetence, and if for some reason
-	you actually *do* decide to use this library, pls give me at least some credit. Thanks!
 ]]
 
 
@@ -202,17 +177,18 @@ local unitConverters = {}
 local unitTypes = {}
 local unitCommonCounterparts = {}
 do -- We will be able to throw away much of everything in this block
+
 	--[[--
 		Builds a list of unit aliases by prepending or appending strings.
 
-		@tparam string[] modifiable all the base strings to prepend/append things to
-		@tparam string[] prepends all the prefixes to prepend to each base string
-		@tparam string[] appends all the suffixes to append to each base string
-		@tparam string[] exceptions base strings to which no prepends/appends will be made
-		@tparam boolean includeOriginal determines whether to inclide unmodified copies of each string
+		@param string[] modifiable all the base strings to prepend/append things to
+		@param string[] prepends all the prefixes to prepend to each base string
+		@param string[] appends all the suffixes to append to each base string
+		@param string[] exceptions base strings to which no prepends/appends will be made
+		@param boolean includeOriginal determines whether to inclide unmodified copies of each string
 			in the modifiable array
 		
-		@treturn string[] the result of the build, as dictated by parameters
+		@return string[] the result of the build, as dictated by parameters
 	]]
 	local function buildAliases(modifiable, prepends, appends, exceptions, includeOriginal)
 		local res = exceptions or {}
@@ -239,10 +215,10 @@ do -- We will be able to throw away much of everything in this block
 
 		Wrapper for @{buildAliases}.
 
-		@tparam string[] modifiabl string to which to append 's'
-		@tparam string[] nonPluralable of strings to which to not append 's'
+		@param string[] modifiable string to which to append 's'
+		@param string[] nonPluralable of strings to which to not append 's'
 
-		@treturn string[] which contains all element of modifiable appended with an 's',
+		@return string[] which contains all element of modifiable appended with an 's',
 			all the original elements of modifiable as well as all the elements of nonPluralable
 	]]
 	local function buildAliasesNormal(modifiable, nonPluralable)
@@ -260,11 +236,11 @@ do -- We will be able to throw away much of everything in this block
 
 		Wrapper for @{buildAliases}.
 
-		@tparam string[] modifiable the base strings which will be pluralized and prepended/appended to
-		@tparam string[] exceptions the base string which will be left unmodified
-		@tparam string[] nonPluralable the baseString which will not be pluralized, but will be prepended/appended to
+		@param string[] modifiable the base strings which will be pluralized and prepended/appended to
+		@param string[] exceptions the base string which will be left unmodified
+		@param string[] nonPluralable the baseString which will not be pluralized, but will be prepended/appended to
 
-		@treturn string[] the resulting aliases
+		@return string[] the resulting aliases
 	]]
 	local function buildAliasesSquare(modifiable, exceptions, nonPluralable)
 		return buildAliases(
@@ -290,11 +266,11 @@ do -- We will be able to throw away much of everything in this block
 
 		@see @{buildAliasesSquare}
 
-		@tparam string[] modifiable the base strings which will be pluralized and prepended/appended to
-		@tparam string[] exceptions the base string which will be left unmodified
-		@tparam string[] nonPluralable the baseString which will not be pluralized, but will be prepended/appended to
+		@param string[] modifiable the base strings which will be pluralized and prepended/appended to
+		@param string[] exceptions the base string which will be left unmodified
+		@param string[] nonPluralable the baseString which will not be pluralized, but will be prepended/appended to
 
-		@treturn string[] the resulting aliases
+		@return string[] the resulting aliases
 	]]
 	local function buildAliasesCube(modifiable, exceptions, nonPluralable)
 		return buildAliases(
@@ -476,7 +452,7 @@ do -- We will be able to throw away much of everything in this block
 				convert = 1e9,
 				commonCounterpart = "mi3",
 			},
-			["cm3"] = { -- Cubic Centimeteres
+			["cm3"] = { -- Cubic Centimetres
 				aliases = buildAliasesCube({"cm", "centimetre"}),
 				convert = 1e-6,
 				commonCounterpart = "ft3",
@@ -646,10 +622,10 @@ do -- We will be able to throw away much of everything in this block
 	}
 
 	for unitType, unitDatas in pairs(UNIT_DATA) do
-		local convertertsOfType = {}
+		local convertersOfType = {}
 
 		for unitKey, unitData in pairs(unitDatas) do
-			convertertsOfType[unitKey] = unitData.convert
+			convertersOfType[unitKey] = unitData.convert
 			unitTypes[unitKey] = unitType
 			unitCommonCounterparts[unitKey] = unitData.commonCounterpart
 
@@ -664,7 +640,7 @@ do -- We will be able to throw away much of everything in this block
 			end
 		end
 
-		unitConverters[unitType] = convertertsOfType
+		unitConverters[unitType] = convertersOfType
 	end
 
 	table.sort( -- We want to try and match the longer aliases first, as shorter ones might be contained within longer ones
@@ -693,9 +669,9 @@ end
 --[[--
 	Converts a number using a converter.
 
-	@tparam number num the number to convert
-	@tparam number|function either a number or function which can be used to convert the number
-	@tparam boolean determines the direction this conversion is happening - true if to the base unit,
+	@param number num the number to convert
+	@param number|function converter either a number or function which can be used to convert the number
+	@param boolean toBase determines the direction this conversion is happening - true if to the base unit,
 		false if from the base unit
 ]]
 local function convertRaw(num, converter, toBase)
@@ -713,12 +689,12 @@ end
 --[[--
 	Converts a number from one unit to another by converting to a unit base and then from it.
 	
-	@tparam number num the number to convert
-	@tparam string sourceUnits the key of the unit to convert from
-	@tparam string targetUnits the key of the unit to convert to
+	@param number num the number to convert
+	@param string sourceUnits the key of the unit to convert from
+	@param string targetUnits the key of the unit to convert to
 
-	@treturn number the result of the conversion
-	@treturn string the unit key of the result. Identical to targetUnits
+	@return number the result of the conversion
+	@return string the unit key of the result. Identical to targetUnits
 ]]
 local function convert(num, sourceUnits, targetUnits)
 	local sourceType = assert(unitTypes[sourceUnits], "Invalid source units!")
@@ -735,11 +711,11 @@ end
 --[[--
 	Wrapper for @{convert} which converts a number to the most common unit counterpart.
 
-	@tparam number num the number to convert
-	@tparam sourceUnits the key of the unit to convert from
+	@param number num the number to convert
+	@param string sourceUnits the key of the unit to convert from
 
-	@treturn number the result of the conversion
-	@treturn string the unit key of the result
+	@return number the result of the conversion
+	@return string the unit key of the result
 ]]
 local function convertToCommonCounterpart(num, sourceUnits)
 	return convert(num, sourceUnits, unitCommonCounterparts[sourceUnits])
@@ -750,8 +726,8 @@ end
 	Takes a string and performs several @{string.gsub} operations on it to replace unit aliases with unit keys,
 	to get rid of unicode characters and so on. Also @[string.lower}s the string.
 
-	@tparam string str the string to clean
-	@treturn string the cleaned string
+	@param string str the string to clean
+	@return string the cleaned string
 ]]
 local function cleanString(str)
 	str = string.lower(str)
@@ -773,8 +749,8 @@ end
 --[[--
 	Scans a string for number-unit pairs.
 
-	@tparam string str the string to search
-	@treturn table[] an array of found pairs. Each pair is a table in the form {num = foundNumber, unit = foundString},
+	@param string str the string to search
+	@return table[] an array of found pairs. Each pair is a table in the form {num = foundNumber, unit = foundString},
 		where foundNumber and foundString are the found number and unit key of the pair respectively
 ]]
 local function findElementsInString(str)
@@ -833,6 +809,8 @@ do -- Some tests idk how to do unit tests ;-;
 	end
 end
 --]]
+
+
 
 return {
 	convert = convert,
