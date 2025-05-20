@@ -13,7 +13,10 @@ This project was sparked by https://akshayanandraut.github.io/api-unit-converter
 
 ## Installation
 
-Coming to [LuaRocks](https://luarocks.org) and [lit](https://github.com/luvit/lit) soon.
+Get it from [LuaRocks](https://luarocks.org):
+```
+luarocks install unit-converter
+```
 
 
 ## Docs
